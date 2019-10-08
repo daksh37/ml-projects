@@ -1,0 +1,119 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[36]:
+
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sbs
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+
+
+# In[37]:
+
+
+df=pd.read_csv('/Users/i0683/Downloads/heart.csv')
+
+
+# In[38]:
+
+
+df.head()
+
+
+# In[39]:
+
+
+y=df.target.values
+
+
+# In[40]:
+
+
+x=df.drop(['target'],axis=1)
+
+
+# In[41]:
+
+
+a = pd.get_dummies(x['cp'], prefix = "cp")
+b = pd.get_dummies(x['thal'], prefix = "thal")
+c = pd.get_dummies(x['slope'], prefix = "slope")
+frames = [x, a, b, c]
+df = pd.concat(frames, axis = 1)
+df.head()
+
+
+# In[42]:
+
+
+df.drop(['cp','thal','slope'],axis=1)
+
+
+# In[43]:
+
+
+norm_df = (df - np.min(df)) / (np.max(df) - np.min(df)).values
+
+
+# In[44]:
+
+
+norm_df.head()
+
+
+# In[45]:
+
+
+x_train, x_test, y_train, y_test =train_test_split(norm_df,y,test_size = 0.2,random_state=0)
+
+
+# In[46]:
+
+
+accuracies = {}
+
+
+# In[47]:
+
+
+lr = LogisticRegression()
+lr.fit(x_train,y_train)
+
+
+# In[49]:
+
+
+acc = lr.score(x_test,y_test)*100
+
+
+# In[51]:
+
+
+print(acc)
+
+
+# In[59]:
+
+
+from sklearn.ensemble import RandomForestClassifier
+rf = RandomForestClassifier(n_estimators = 1000, random_state = 1)
+rf.fit(x_train, y_train)
+
+acc = rf.score(x_test,y_test)*100
+
+
+# In[60]:
+
+
+print(acc)
+
+
+# In[ ]:
+
+
+
+
